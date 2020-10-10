@@ -1,9 +1,9 @@
-import { Request, Response, NextFunction } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import { verify } from 'jsonwebtoken';
 
 import authConfig from '../config/auth';
 
-interface TokenPayLoad {
+interface TokenPayload {
   iat: number;
   exp: number;
   sub: string;
@@ -11,11 +11,9 @@ interface TokenPayLoad {
 
 export default function ensureAuthenticated(
   request: Request,
-  reponse: Response,
+  response: Response,
   next: NextFunction,
 ): void {
-  // validacao do token jwt
-
   const authHeader = request.headers.authorization;
 
   if (!authHeader) {
@@ -27,14 +25,14 @@ export default function ensureAuthenticated(
   try {
     const decoded = verify(token, authConfig.jwt.secret);
 
-    const { sub } = decoded as TokenPayLoad;
+    const { sub } = decoded as TokenPayload;
 
     request.user = {
       id: sub,
     };
 
     return next();
-  } catch (error) {
-    throw new Error('Invaliable JWT token');
+  } catch {
+    throw new Error('Invalid JWT token');
   }
 }
