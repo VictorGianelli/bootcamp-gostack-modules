@@ -1,6 +1,8 @@
 import { getRepository } from 'typeorm';
-
 import { hash } from 'bcryptjs';
+
+import AppError from '../errors/AppError';
+
 import User from '../models/User';
 
 interface Request {
@@ -18,7 +20,7 @@ class CreateUserService {
     });
 
     if (checkUserExidts) {
-      throw Error('This appointment is already booked');
+      throw new AppError('This appointment is already booked');
     }
 
     const hashedPassword = await hash(password, 8);
