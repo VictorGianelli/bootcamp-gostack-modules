@@ -28,6 +28,9 @@
     }],
     "class-methods-use-this": "off",
     "camelcase": "off", // Used because ""@typescript-eslint/camelcase": "off"," was not working
+    "@typescript-eslint/no-unused-vars": ["error",{
+      "argsIgnorePattern": "_"
+    }],
     "import/extensions": [
       "error",
       "ignorePackages",
