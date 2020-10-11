@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+interface FormProps {
+  hasError: boolean;
+}
+
 export const Header = styled.h1`
   font-size: 18px;
   display: flex;
