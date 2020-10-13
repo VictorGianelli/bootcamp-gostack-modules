@@ -2,7 +2,6 @@ import React, { InputHTMLAttributes, useEffect, useRef, useState, useCallback } 
 import { IconBaseProps } from 'react-icons'
 import { useField } from '@unform/core'
 
-
 import { Container} from './styles'
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
@@ -46,10 +45,7 @@ const Input: React.FC<InputProps> = ({ name, icon: Icon, ...rest }) => {
         {...rest}
       />
 
-      {/* {error && (
-      <Error title={error} >
-        <FiAlertCircle color="#c53030" size={20} />
-      </Error>)} */}
+      {error}
     </Container>
   )
 };
