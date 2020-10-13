@@ -1,6 +1,13 @@
 import styled,{css} from 'styled-components';
 
-export const Container = styled.div`
+import Tooltip from '../Tooltip';
+
+interface ContainerProps {
+  isFocused: boolean;
+  isFilled: boolean;
+}
+
+export const Container = styled.div<ContainerProps>`
   background: #232129;
   border-radius: 10px;
   padding: 16px;
@@ -15,6 +22,15 @@ export const Container = styled.div`
   & + div {
     margin-top: 8px;
   }
+
+  ${(props) => props.isFocused && css`
+    color:#ff9000;
+    border-color:#ff9000;
+  `}
+
+  ${(props) => props.isFilled && css`
+    color:#ff9000;
+  `}
 
   input {
     flex: 1;
