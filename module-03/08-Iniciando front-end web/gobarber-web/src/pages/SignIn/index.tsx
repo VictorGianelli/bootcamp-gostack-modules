@@ -44,11 +44,13 @@ const SingIn: React.FC = () => {
       })
 
 
-    } catch (error) {
+    } catch (err) {
+      if (err instanceof Yup.ValidationError){
+        const erros = getValidationErros(err)
 
-      const erros = getValidationErros(error)
+              formRef.current?.setErrors(erros);
+      }
 
-      formRef.current?.setErrors(erros);
 
     }
   }, [signIn])
