@@ -1,8 +1,10 @@
 import React, { useCallback, useRef} from 'react'
-import { FiArrowLeft, FiMail, FiUser, FiLock, FiYoutube } from 'react-icons/fi'
+import { FiArrowLeft, FiMail, FiUser, FiLock} from 'react-icons/fi'
 import { FormHandles } from '@unform/core'
 import { Form } from '@unform/web'
 import * as Yup from 'yup'
+import { Link, useHistory } from 'react-router-dom'
+
 import getValidationErros from '../../utils/getValidationErros'
 
 import logoImg from '../../assets/logo.svg';
@@ -10,10 +12,14 @@ import logoImg from '../../assets/logo.svg';
 import Input from '../../components/Input';
 import Button from '../../components/Button';
 
-import { Container, Content, Background } from './styles'
+import { Container, Content, Background, AnimationContainer } from './styles'
+import api from '../../services/api'
+import { useToast } from '../../hooks/toast'
 
 const SingUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null)
+  const { addToast } = useToast();
+  const history = useHistory();
 
   const handleSubmit = useCallback(async (data: object) => {
     try {
@@ -28,19 +34,36 @@ const SingUp: React.FC = () => {
         abortEarly: false,
       })
 
+      await api.post('/users', data);
+
+      history.push('/');
+
+      addToast({
+        type: 'success',
+        title: 'Cadastro realizado',
+        description: 'Você já pode fazer logon no GoBarber!'
+      });
+
     } catch (err) {
+      if (err instanceof Yup.ValidationError){
+        const erros = getValidationErros(err)
 
-      const erros = getValidationErros(err);
+        formRef.current?.setErrors(erros);
+      }
 
-      formRef.current?.setErrors(erros);
-
+      addToast({
+        type: 'error',
+        title: 'Erro no cadastro',
+        description: 'Ocorreu um erro ao realizar o cadastro'
+      });
     }
-  },[])
+  },[addToast,history])
 
   return (
     <Container>
       <Background />
       <Content>
+        <AnimationContainer>
         <img src={logoImg} alt="GoBarber" />
 
         <Form ref={formRef} onSubmit={handleSubmit}>
@@ -53,10 +76,11 @@ const SingUp: React.FC = () => {
           <Button type="submit">Cadastrar</Button>
         </Form>
 
-        <a href="create">
+        <Link to="">
           <FiArrowLeft />
-        Voltar para logon
-      </a>
+          Voltar para logon
+        </Link>
+      </AnimationContainer>
       </Content>
     </Container>
   )
