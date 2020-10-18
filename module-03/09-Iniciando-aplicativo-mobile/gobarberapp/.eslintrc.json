@@ -37,12 +37,12 @@
         "no-use-before-define": "off",
         "import/no-unresolved": "off",
         "import/extensions": [
-          "error",
+          "off",
           "ignorePackages",
           {
             "js": "never",
             "jsx": "never",
-            "ts": "never",
+            "ts": "tru",
             "tsx": "never"
           }
        ]
