@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useCallback, useRef } from 'react';
 import {
   Image,
   View,
@@ -6,11 +6,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+import * as Yup from 'yup';
+
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+
+import getValidationErros from '../../utils/getValidationErros';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -22,8 +27,38 @@ import { Container, Title, BackToSignIn, BackToSignInText } from './styles';
 const SignUp: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const emailInputRef = useRef<TextInput>(null);
+
   const passwordInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
+
+  const handleSignUp = useCallback(async (data: SignUpFormData) => {
+    try {
+      formRef.current?.setErrors({});
+      const schema = Yup.object().shape({
+        name: Yup.string().required('Nome obrigatório'),
+        email: Yup.string()
+          .required('E-mail obrigatório')
+          .email('Digite um e-mail válido'),
+        password: Yup.string().min(6, 'Mínimo 6 digitos'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      // await api.post('/users', data);
+
+      // history.push('/');
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const erros = getValidationErros(err);
+
+        formRef.current?.setErrors(erros);
+      }
+
+      Alert.alert('Erro no cadastro', 'Ocorreu um erro ao realizar o cadastro');
+    }
+  }, []);
 
   return (
     <>
@@ -42,12 +77,7 @@ const SignUp: React.FC = () => {
             <View>
               <Title>Crie a sua conta</Title>
             </View>
-            <Form
-              ref={formRef}
-              onSubmit={data => {
-                console.log(data);
-              }}
-            >
+            <Form ref={formRef} onSubmit={handleSignUp}>
               <Input
                 name="name"
                 icon="user"
@@ -82,12 +112,14 @@ const SignUp: React.FC = () => {
                 secureTextEntry
                 returnKeyType="send"
                 onSubmitEditing={() => {
+                  console.log('SinUp');
                   formRef.current?.submitForm();
                 }}
               />
             </Form>
             <Button
               onPress={() => {
+                console.log('SinUp');
                 formRef.current?.submitForm();
               }}
             >

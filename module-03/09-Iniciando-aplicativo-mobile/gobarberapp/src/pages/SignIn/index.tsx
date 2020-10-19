@@ -6,11 +6,16 @@ import {
   KeyboardAvoidingView,
   Platform,
   TextInput,
+  Alert,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
+import * as Yup from 'yup';
+
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
+
+import getValidationErros from '../../utils/getValidationErros';
 
 import Input from '../../components/Input';
 import Button from '../../components/Button';
@@ -26,13 +31,43 @@ import {
   CreateAccountButtonText,
 } from './styles';
 
+interface SignInFormData {
+  email: string;
+  password: string;
+}
+
 const SignIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
   const passwordInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
 
-  const handleSingIn = useCallback((data: object) => {
-    console.log(data);
+  const handleSignIn = useCallback(async (data: SignInFormData) => {
+    try {
+      formRef.current?.setErrors({});
+      const schema = Yup.object().shape({
+        email: Yup.string()
+          .required('E-mail obrigatório')
+          .email('Digite um e-mail válido'),
+        password: Yup.string().required('Senha é obrigatória'),
+      });
+
+      await schema.validate(data, {
+        abortEarly: false,
+      });
+
+      // await signIn({
+      //   email: data.email,
+      //   password: data.password,
+      // });
+    } catch (err) {
+      if (err instanceof Yup.ValidationError) {
+        const erros = getValidationErros(err);
+
+        formRef.current?.setErrors(erros);
+      }
+
+      Alert.alert('Erro de autenticação', 'Ocorreu um erro de autenticação');
+    }
   }, []);
 
   return (
@@ -53,7 +88,7 @@ const SignIn: React.FC = () => {
               <Title>Faça o seu logon</Title>
             </View>
 
-            <Form ref={formRef} onSubmit={handleSingIn}>
+            <Form ref={formRef} onSubmit={handleSignIn}>
               <Input
                 name="email"
                 icon="mail"
@@ -75,6 +110,7 @@ const SignIn: React.FC = () => {
                 secureTextEntry
                 returnKeyType="send"
                 onSubmitEditing={() => {
+                  console.log('SinIn');
                   formRef.current?.submitForm();
                 }}
               />
@@ -82,6 +118,7 @@ const SignIn: React.FC = () => {
 
             <Button
               onPress={() => {
+                console.log('SinIn');
                 formRef.current?.submitForm();
               }}
             >
