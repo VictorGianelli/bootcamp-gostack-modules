@@ -117,7 +117,6 @@ const SignIn: React.FC = () => {
                 secureTextEntry
                 returnKeyType="send"
                 onSubmitEditing={() => {
-                  console.log('SinIn');
                   formRef.current?.submitForm();
                 }}
               />
@@ -125,7 +124,6 @@ const SignIn: React.FC = () => {
 
             <Button
               onPress={() => {
-                console.log('SinIn');
                 formRef.current?.submitForm();
               }}
             >
@@ -133,7 +131,7 @@ const SignIn: React.FC = () => {
             </Button>
 
             <ForgotPassword onPress={() => {}}>
-              <ForgotPasswordText>Esqueci minga senha!</ForgotPasswordText>
+              <ForgotPasswordText>Esqueci minha senha!</ForgotPasswordText>
             </ForgotPassword>
           </Container>
         </ScrollView>
