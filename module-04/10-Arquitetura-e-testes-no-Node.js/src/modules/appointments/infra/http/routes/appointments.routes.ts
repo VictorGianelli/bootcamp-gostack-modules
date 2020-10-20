@@ -6,7 +6,6 @@ import ensureAuthenticated from '@modules/users/infra/http/middlewares/ensureAut
 import CreateAppointmentService from '@modules/appointments/services/CreateAppointmentService';
 
 const appointmentsRouter = Router();
-const appointmentRepository = new AppointmentRepository();
 
 appointmentsRouter.use(ensureAuthenticated);
 
@@ -21,6 +20,7 @@ appointmentsRouter.post('/', async (request, response) => {
 
   const parseDate = parseISO(date);
 
+  const appointmentRepository = new AppointmentRepository();
   const createAppointment = new CreateAppointmentService(appointmentRepository);
 
   const appointment = await createAppointment.execute({
