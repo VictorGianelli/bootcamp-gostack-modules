@@ -33,5 +33,47 @@ describe('AuthenticateUser', () => {
         expect(resonse).toHaveProperty('token');
         expect(resonse.user).toEqual(user);
     });
+     
+    it('should`nt be able to authenticate a non exixsting user', async () => {
+        const fakeUsersReposirory = new FakeUsersReposirory();
+        const fakeHashProvider = new FakeHashProvider();
 
+        const authenticateUser = new AuthenticateUserService(
+            fakeUsersReposirory,
+            fakeHashProvider
+        )
+
+        expect(authenticateUser.execute({
+            email: 'johndoe@example.com',
+            password: '123123123'
+        })).rejects.toBeInstanceOf(AppError);
+
+    });
+
+    it('should`nt be able to authenticate with wrong password', async () => {
+        const fakeUsersReposirory = new FakeUsersReposirory();
+        const fakeHashProvider = new FakeHashProvider();
+
+        const createUser = new CreateUserService(
+            fakeUsersReposirory,
+            fakeHashProvider
+            
+        )
+        const authenticateUser = new AuthenticateUserService(
+            fakeUsersReposirory,
+            fakeHashProvider
+        )
+
+        await createUser.execute({
+            name: 'John Doe',
+            email: 'johndoe@example.com',
+            password: '123456',
+        });
+
+        expect(authenticateUser.execute({
+            email: 'johndoe@example.com',
+            password: 'wrong-password',
+        }),
+        ).rejects.toBeInstanceOf(AppError);
+    });
 })
