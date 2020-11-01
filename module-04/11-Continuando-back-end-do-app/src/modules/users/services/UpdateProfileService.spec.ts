@@ -7,7 +7,7 @@ let fakeUsersReposirory: FakeUsersReposirory;
 let fakeHashProvider: FakeHashProvider;
 let updateProfile: UpdateProfile
 
-describe('UpdateProfileAvatar', () => {
+describe('UpdateProfileServer', () => {
   beforeEach(() => {
     fakeUsersReposirory = new FakeUsersReposirory();
     fakeHashProvider = new FakeHashProvider();
@@ -107,6 +107,17 @@ describe('UpdateProfileAvatar', () => {
       old_password: 'wrong-old-password',
       password: '123123',
     })).rejects.toBeInstanceOf(AppError);
+  });
+
+  it('should not be able to upload a non-user', async () => {
+
+    await expect( updateProfile.execute({
+      user_id: 'non-user_id',
+      name: 'John Doe',
+      email: 'johndoe@example.com',
+      password: '123123',
+    })).rejects.toBeInstanceOf(AppError);
+
   });
 
 })
