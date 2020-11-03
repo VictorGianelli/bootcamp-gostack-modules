@@ -13,7 +13,7 @@ describe('CreateAppointment', () => {
     )
   })
 
-  it('should be able to create a mew appointment', async () => {
+  it('should be able to create a new appointment', async () => {
     const appointment = await createAppointment.execute({
       date: new Date(),
       provider_id: '123123123'
