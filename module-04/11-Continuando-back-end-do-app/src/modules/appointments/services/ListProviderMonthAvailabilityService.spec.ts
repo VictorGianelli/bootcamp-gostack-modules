@@ -16,7 +16,7 @@ describe('ListProviderMonthAvailabilityService', () => {
 
   })
 
-  it('should be able to list the the monrh avaliability from provider', async () => {
+  it('should be able to list the the month avaliability from provider', async () => {
 
     await fakeAppointmentsReposirory.create({
       provider_id: 'user',
