@@ -1,4 +1,4 @@
-import { MigrationInterface, QueryRunner, TableColumn, TableForeignKey } from "typeorm";
+import { MigrationInterface, QueryRunner, TableColumn, TableForeignKey } from 'typeorm';
 
 export default class AddUserIDToAppointments1604455526412 implements MigrationInterface {
 

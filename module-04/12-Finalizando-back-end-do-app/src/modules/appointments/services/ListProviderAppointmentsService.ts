@@ -2,6 +2,7 @@ import { injectable, inject } from 'tsyringe';
 
 import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
 import Appointment from '../infra/typeorm/entities/Appointment';
+import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
 
 interface IRequest {
   provider_id: string;
@@ -15,6 +16,9 @@ class ListProviderAppointmentsService {
   constructor(
     @inject('AppointmentsRepository')
     private appointmentsRepository: IAppointmentsRepository,
+    
+    @inject('CacheProvider')
+    private cacheProvider: ICacheProvider,
   ) { }
 
   public async execute({
@@ -23,6 +27,10 @@ class ListProviderAppointmentsService {
     month,
     year
   }: IRequest): Promise<Appointment[]> {
+    const cacheData = await this.cacheProvider.recover('asd')
+
+    console.log(cacheData);
+
     const appointments = await this.appointmentsRepository.findAllInDayFromProvider({
       provider_id,
       day,
@@ -30,22 +38,7 @@ class ListProviderAppointmentsService {
       year
     });
 
-    // const numberOfDaysInMonth = getDaysInMonth(new Date(year,month -1))
-
-    // const eachDayArray = Array.from(
-    //   { length: numberOfDaysInMonth },
-    //   (_, index) => index +1,
-    // );
-
-    // const availability = eachDayArray.map(day => {
-    //   const appointmentsInDay = appointments.filter(appointment => {
-    //     return getDate(appointment.date) === day;
-    //   })
-    //   return {
-    //     day,
-    //     available: appointmentsInDay.length < 10
-    //   };
-    // })
+    // await this.cacheProvider.save('asd','asd');
 
     return appointments;
   }
