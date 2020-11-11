@@ -33,12 +33,12 @@ class CreateAppointmentService {
       appointmentDate,
     );
 
-    if (isBefore(appointmentDate, Date.now())) {
-      throw new AppError("You can't create an appointment on a past date");
-    }
-
     if (findAppoimtmentInTheSameDate) {
       throw new AppError('This appointment is already booked');
+    }
+
+    if (isBefore(appointmentDate, Date.now())) {
+      throw new AppError("You can't create an appointment on a past date");
     }
 
     if (user_id === provider_id) {
