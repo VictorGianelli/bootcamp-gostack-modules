@@ -1,8 +1,8 @@
-import { injectable, inject } from 'tsyringe';
-
-import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
-import Appointment from '../infra/typeorm/entities/Appointment';
 import ICacheProvider from '@shared/container/providers/CacheProvider/models/ICacheProvider';
+import { inject, injectable } from 'tsyringe';
+import Appointment from '../infra/typeorm/entities/Appointment';
+import IAppointmentsRepository from '../repositories/IAppointmentsRepository';
+
 
 interface IRequest {
   provider_id: string;
