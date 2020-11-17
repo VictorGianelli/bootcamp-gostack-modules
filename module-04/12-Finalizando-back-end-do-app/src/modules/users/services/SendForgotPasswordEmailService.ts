@@ -16,10 +16,10 @@ class SendForgotPasswordEmailService {
  constructor(
   @inject('UsersRepository')
   private usersRepository: IUsersRepository,
-  
+
   @inject('MailProvider')
   private mailProvider: IMailProvider,
-  
+
   @inject('UserTokensRepository')
   private usersTokensRepository: IUserTokensRepository,
  ) { }
@@ -50,7 +50,7 @@ class SendForgotPasswordEmailService {
     file: forgotPasswordTemplate,
     variables: {
      name: user.name,
-     link: `${process.env.APP_WEB_URL}/redet_password=${token}`,
+     link: `${process.env.APP_WEB_URL}/reset-password=${token}`,
     }
    }
   })
