@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { FiClock, FiPower } from 'react-icons/fi';
 import logoImg from '../../assets/logo.svg';
 import { useAuth } from '../../hooks/auth';
@@ -10,19 +10,21 @@ import {
   Content,
   Schedule,
   NextAppointment,
+  Section,
+  Appointment,
   Calendar
 } from './styles';
 
 const Dashboard: React.FC = () => {
+  const [selectedDate , setSelectedDate] = useState(new Date)
 
   const { signOut, user } = useAuth();
-  console.log(user)
+
   return (
     <Container>
       <Header>
         <HeaderContent>
           <img src={logoImg} alt="GoBarber" />
-
 
           <Profile>
             <img src={user.avatar_url} alt={user.name} />
@@ -58,6 +60,59 @@ const Dashboard: React.FC = () => {
               </span>
             </div>
           </NextAppointment>
+
+          <Section>
+            <strong>Manhã</strong>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                08:00
+              </span>
+
+              <div>
+                <img src="https://avatars2.githubusercontent.com/u/18005772?s=460&u=17d2733b48e0e47054c5706a64acb48f12068063&v=4" alt={user.name} />
+
+                <strong>Victor Gianelli</strong>
+
+              </div>
+            </Appointment>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                10:00
+              </span>
+
+              <div>
+                <img src="https://avatars2.githubusercontent.com/u/18005772?s=460&u=17d2733b48e0e47054c5706a64acb48f12068063&v=4" alt={user.name} />
+
+                <strong>Victor Gianelli</strong>
+
+              </div>
+            </Appointment>
+
+          </Section>
+
+          <Section>
+            <strong>Tarde</strong>
+
+            <Appointment>
+              <span>
+                <FiClock />
+                15:00
+              </span>
+
+              <div>
+                <img src="https://avatars2.githubusercontent.com/u/18005772?s=460&u=17d2733b48e0e47054c5706a64acb48f12068063&v=4" alt={user.name} />
+
+                <strong>Victor Gianelli</strong>
+
+              </div>
+            </Appointment>
+
+          </Section>
+
         </Schedule>
         <Calendar />
       </Content>
