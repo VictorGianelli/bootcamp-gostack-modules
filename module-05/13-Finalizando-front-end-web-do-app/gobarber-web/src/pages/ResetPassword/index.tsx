@@ -7,7 +7,6 @@ import * as Yup from 'yup'
 import logoImg from '../../assets/logo.svg'
 import Button from '../../components/Button'
 import Input from '../../components/Input'
-import { useAuth } from '../../hooks/auth'
 import { useToast } from '../../hooks/toast'
 import api from '../../services/api'
 import getValidationErros from '../../utils/getValidationErros'
@@ -20,8 +19,6 @@ interface ResetPasswwordFormData {
 
 const SingIn: React.FC = () => {
   const formRef = useRef<FormHandles>(null);
-
-  const { signIn } = useAuth();
 
   const { addToast } = useToast();
 
@@ -89,11 +86,6 @@ const SingIn: React.FC = () => {
             <Button type="submit">Alterar senha</Button>
 
           </Form>
-
-          {/* <Link to="/signup">
-          <FiLogIn />
-        Criar conta
-      </Link> */}
         </AnimationContainer>
       </Content>
       <Background />
