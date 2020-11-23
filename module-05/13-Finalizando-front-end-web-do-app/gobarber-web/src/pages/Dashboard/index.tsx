@@ -21,6 +21,7 @@ import {
 import logoImg from '../../assets/logo.svg';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
+import { parseISO } from 'date-fns/esm';
 
 
 interface MonthAvailabilityItem {
@@ -31,6 +32,7 @@ interface MonthAvailabilityItem {
 interface Appointment {
   id: string;
   date: string;
+  hourFormatted: string;
   user: {
     name: string;
     avatar_url: string;
@@ -76,8 +78,14 @@ const Dashboard: React.FC = () => {
       },
     })
       .then(response => {
-        setAppointments(response.data);
-        console.log(response.data)
+        const appointmentFormatted = response.data.map(appointment => {
+          return {
+            ...appointment,
+            hourFormatted: format(parseISO(appointment.date), 'HH:mm')
+          }
+        })
+
+        setAppointments(appointmentFormatted);
       });
   }, [selectedDate]);
 
@@ -91,7 +99,7 @@ const Dashboard: React.FC = () => {
         return new Date(year, month, monthDay.day);
       });
 
-    console.log(1,dates)
+    console.log(1, dates)
     return dates;
   }, [currentMonth, monthAvailability]);
 
@@ -104,6 +112,18 @@ const Dashboard: React.FC = () => {
   const selectedWeekDay = useMemo(() => {
     return format(selectedDate, 'cccc', { locale: ptBR });
   }, [selectedDate]);
+
+  const mornigAppointments = useMemo(() => {
+    return appointments.filter(appointment => {
+      return parseISO(appointment.date).getHours() < 12;
+    })
+  }, [appointments]);
+
+  const afternoonAppointments = useMemo(() => {
+    return appointments.filter(appointment => {
+      return parseISO(appointment.date).getHours() >= 12;
+    })
+  }, [appointments]);
 
   return (
     <Container>
@@ -149,52 +169,44 @@ const Dashboard: React.FC = () => {
           <Section>
             <strong>Manhã</strong>
 
-            <Appointment>
-              <span>
-                <FiClock />
-                08:00
+            {mornigAppointments.map(appointment => (
+              <Appointment key={appointment.id}>
+                <span>
+                  <FiClock />
+                {appointment.hourFormatted}
               </span>
 
-              <div>
-                <img src="https://avatars2.githubusercontent.com/u/18005772?s=460&u=17d2733b48e0e47054c5706a64acb48f12068063&v=4" alt={user.name} />
+                <div>
+                  <img src={appointment.user.avatar_url}
+                    alt={appointment.user.name} />
 
-                <strong>Victor Gianelli</strong>
+                  <strong>{appointment.user.name}</strong>
 
-              </div>
-            </Appointment>
-
-            <Appointment>
-              <span>
-                <FiClock />
-                10:00
-              </span>
-
-              <div>
-                <img src="https://avatars2.githubusercontent.com/u/18005772?s=460&u=17d2733b48e0e47054c5706a64acb48f12068063&v=4" alt={user.name} />
-
-                <strong>Victor Gianelli</strong>
-
-              </div>
-            </Appointment>
+                </div>
+              </Appointment>
+            ))}
 
           </Section>
 
           <Section>
             <strong>Tarde</strong>
 
-            <Appointment>
-              <span>
-                <FiClock />
-                15:00
+            {afternoonAppointments.map(appointment => (
+              <Appointment key={appointment.id}>
+                <span>
+                  <FiClock />
+                {appointment.hourFormatted}
               </span>
 
-              <div>
-                <img src="https://avatars2.githubusercontent.com/u/18005772?s=460&u=17d2733b48e0e47054c5706a64acb48f12068063&v=4" alt={user.name} />
+                <div>
+                  <img src={appointment.user.avatar_url}
+                    alt={appointment.user.name} />
 
-                <strong>Victor Gianelli</strong>
+                  <strong>{appointment.user.name}</strong>
 
-              </div>
-            </Appointment>
+                </div>
+              </Appointment>
+            ))}
 
           </Section>
 
