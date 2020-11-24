@@ -22,6 +22,7 @@ import logoImg from '../../assets/logo.svg';
 import { useAuth } from '../../hooks/auth';
 import api from '../../services/api';
 import { parseISO } from 'date-fns/esm';
+import { Link } from 'react-router-dom';
 
 
 interface MonthAvailabilityItem {
@@ -141,7 +142,7 @@ const Dashboard: React.FC = () => {
             <img src={user.avatar_url} alt={user.name} />
             <div>
               <span>Bem-vindo,</span>
-              <strong>Victor Gianelli</strong>
+              <Link to="/profile"><strong>Victor Gianelli</strong></Link>
             </div>
           </Profile>
 
@@ -208,7 +209,7 @@ const Dashboard: React.FC = () => {
             {afternoonAppointments.length === 0 && (
               <p>Nenhum agendamento neste período</p>
             )}
-            
+
             {afternoonAppointments.map(appointment => (
               <Appointment key={appointment.id}>
                 <span>
