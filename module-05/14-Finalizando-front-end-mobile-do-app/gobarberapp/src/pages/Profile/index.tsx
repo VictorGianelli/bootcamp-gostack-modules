@@ -11,6 +11,7 @@ import {
 import Icon from 'react-native-vector-icons/Feather';
 import { useNavigation } from '@react-navigation/native';
 import * as Yup from 'yup';
+import ImagePicker from 'react-native-image-picker'
 
 import { Form } from '@unform/mobile';
 import { FormHandles } from '@unform/core';
@@ -51,11 +52,11 @@ const Profile: React.FC = () => {
   const confirmPasswordInputRef = useRef<TextInput>(null);
   const navigation = useNavigation();
 
-  const handleOnSubmit = useCallback(
+  const handleSubmit = useCallback(
     async (data: ProfileFormData) => {
+      console.log(1);
       try {
         formRef.current?.setErrors({});
-
         const schema = Yup.object().shape({
           name: Yup.string().required('Nome obrigatório'),
           email: Yup.string()
@@ -105,7 +106,7 @@ const Profile: React.FC = () => {
         );
 
         navigation.goBack();
-      } catch (err) { 
+      } catch (err) {
         if (err instanceof Yup.ValidationError) {
           const erros = getValidationErros(err);
 
@@ -118,8 +119,40 @@ const Profile: React.FC = () => {
         );
       }
     },
-    [navigation],
+    [navigation, updateUser],
   );
+
+  const handleUpdateAvatar = useCallback(() => {
+    ImagePicker.showImagePicker({
+      title: 'Selecione um avatar',
+      cancelButtonTitle: 'Cancelar',
+      takePhotoButtonTitle: 'Usar câmera',
+      chooseFromLibraryButtonTitle: 'Escolha da galeria',
+    }, (response) => {
+      if (response.didCancel) {
+        return;
+      }
+
+      if (response.error) {
+        Alert.alert('Erro ao atualizar o seu avatar.')
+        return;
+      }
+
+      //const source = { uri: response.uri };
+
+      const data = new FormData();
+
+      data.append('avatar', {
+        type: 'image/jpeg',
+        name: `${user.id}.jpg`,
+        uri: response.uri,
+      })
+
+      api.patch('users/avatar', data).then(apiResponse => {
+        updateUser(apiResponse.data);
+      })
+    })
+  }, [updateUser, user.id]);
 
   const handleGoBack = useCallback(() => {
     navigation.goBack();
@@ -141,13 +174,13 @@ const Profile: React.FC = () => {
               <Icon name="chevron-left" size={24} color="#999591" />
             </BackButton>
 
-            <UserAvatarButton>
+            <UserAvatarButton onPress={handleUpdateAvatar} >
               <UserAvatar source={{ uri: user.avatar_url }} />
             </UserAvatarButton>
             <View>
               <Title>Meu perfil</Title>
             </View>
-            <Form initialData={user} ref={formRef} onSubmit={() => { handleOnSubmit }}>
+            <Form initialData={user} ref={formRef} onSubmit={() => { handleSubmit }}>
               <Input
                 name="name"
                 icon="user"
